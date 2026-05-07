@@ -6,7 +6,7 @@ All config files live in the `configs/` directory.
 
 ```yaml
 app:
-  max_wallet_generate: 1000
+  max_wallet_generate: 0  # 0 = unlimited
   max_batch_wallet_per_tx: 250
   default_amount: "0.0000001"
   token_decimals: 18
@@ -20,7 +20,7 @@ app:
 
 | Field | Description | Default |
 |---|---|---|
-| `max_wallet_generate` | Max wallets to generate at once | 1000 |
+| `max_wallet_generate` | Max wallets to generate at once (0 = unlimited) | `0` |
 | `max_batch_wallet_per_tx` | Recipients per transaction (auto-batches above this) | 250 |
 | `default_amount` | Pre-filled amount in disperse form | `"0.01"` |
 | `token_decimals` | Decimal places for ERC20 tokens | 18 |
@@ -58,9 +58,6 @@ native_token: POL
 | Key | Name | Chain ID | Token |
 |---|---|---|---|
 | `polygon` | Polygon | 137 | POL |
-| `ethereum` | Ethereum | 1 | ETH |
-| `bnb` | BNB Chain | 56 | BNB |
-| `base` | Base | 8453 | ETH |
 
 ### Testnet
 
@@ -68,7 +65,6 @@ native_token: POL
 |---|---|---|---|
 | `polygon_amoy` | Polygon Amoy | 80002 | POL |
 | `ethereum_sepolia` | Ethereum Sepolia | 11155111 | ETH |
-| `bnb_testnet` | BNB Chain Testnet | 97 | BNB |
 | `base_sepolia` | Base Sepolia | 84532 | ETH |
 
 > **Adding a new chain requires developer action.** The disperse contract must be deployed on the target chain first. If you need support for a new chain, [open a chain request](https://github.com/0xtbug/evm-disperse-tools/issues/new?template=chain_request.yml).

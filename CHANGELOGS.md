@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.0.1
+
+### Improvements
+
+- **Wallet Manager** — New export features:
+  - `P` Export private keys only (one per line to `<name>_privkeys.txt`)
+  - `A` Export addresses only (one per line to `<name>_addresses.txt`)
+- **Activity Log** — All wallet operations now logged in the Activity pane
+- **Footer Shortcuts** — Updated to show all available wallet manager shortcuts
+
+### Fixes
+
+- Removed duplicate result display from wallet manager (now only in Activity log)
+- Updated docs: keyboard shortcuts, configuration, supported chains
+
 ## v1.0.0
 
 Initial release of **evm-disperse-tools** — a free, terminal-based (TUI) tool for bulk sending native tokens and ERC20 tokens across multiple EVM chains.

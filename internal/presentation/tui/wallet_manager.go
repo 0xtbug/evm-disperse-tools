@@ -60,6 +60,11 @@ type walletSavedMsg struct {
 	path string
 }
 
+// walletExportedMsg is sent when private keys or addresses are exported
+type walletExportedMsg struct {
+	path string
+}
+
 // Init initializes the wallet manager
 func (wm *WalletManagerModel) Init() tea.Cmd {
 	return nil
@@ -123,17 +128,54 @@ func (wm *WalletManagerModel) Update(msg tea.Msg) (*WalletManagerModel, tea.Cmd)
 			wm.inputMode = true
 			return wm, nil
 		case "g", "G":
-			return wm, wm.generateWallets()
+			num := wm.numInput
+			if num == "" {
+				num = "1"
+			}
+			return wm, tea.Batch(
+				func() tea.Msg { return logMsg{message: fmt.Sprintf("[Wallet] Generating %s wallets...", num)} },
+				wm.generateWallets(),
+			)
 		case "s", "S":
-			return wm, wm.saveWallets()
+			return wm, tea.Batch(
+				func() tea.Msg {
+					return logMsg{message: fmt.Sprintf("[Wallet] Saving wallets as JSON (%s)...", wm.nameInput)}
+				},
+				wm.saveWallets(),
+			)
+		case "p", "P":
+			return wm, tea.Batch(
+				func() tea.Msg {
+					return logMsg{message: fmt.Sprintf("[Wallet] Exporting private keys (%s)...", wm.nameInput)}
+				},
+				wm.exportPrivateKeys(),
+			)
+		case "a", "A":
+			return wm, tea.Batch(
+				func() tea.Msg {
+					return logMsg{message: fmt.Sprintf("[Wallet] Exporting addresses (%s)...", wm.nameInput)}
+				},
+				wm.exportAddresses(),
+			)
 		}
 
 	case walletGeneratedMsg:
 		wm.wallets = msg.wallets
-		return wm, nil
+		return wm, func() tea.Msg {
+			return logMsg{message: fmt.Sprintf("[Wallet] ✓ Generated %d wallets", len(msg.wallets))}
+		}
 
 	case walletSavedMsg:
-		return wm, nil
+		if strings.HasPrefix(msg.path, "error") {
+			return wm, func() tea.Msg { return logMsg{message: fmt.Sprintf("[Wallet] ✗ %s", msg.path)} }
+		}
+		return wm, func() tea.Msg { return logMsg{message: fmt.Sprintf("[Wallet] ✓ Saved to: %s", msg.path)} }
+
+	case walletExportedMsg:
+		if strings.HasPrefix(msg.path, "error") {
+			return wm, func() tea.Msg { return logMsg{message: fmt.Sprintf("[Wallet] ✗ %s", msg.path)} }
+		}
+		return wm, func() tea.Msg { return logMsg{message: fmt.Sprintf("[Wallet] ✓ Exported to: %s", msg.path)} }
 	}
 
 	return wm, nil
@@ -202,6 +244,66 @@ func (wm *WalletManagerModel) saveWallets() tea.Cmd {
 		}
 
 		return walletSavedMsg{path: namedPath}
+	}
+}
+
+// exportPrivateKeys exports only private keys to a text file (one per line)
+func (wm *WalletManagerModel) exportPrivateKeys() tea.Cmd {
+	return func() tea.Msg {
+		if len(wm.wallets) == 0 {
+			return walletExportedMsg{path: "error: no wallets — press G first"}
+		}
+
+		name := wm.nameInput
+		if name == "" {
+			name = "default"
+		}
+
+		if err := os.MkdirAll(wm.walletsDir, 0755); err != nil {
+			return walletExportedMsg{path: fmt.Sprintf("error: %v", err)}
+		}
+
+		var sb strings.Builder
+		for _, w := range wm.wallets {
+			fmt.Fprintln(&sb, w.PrivateKey)
+		}
+
+		path := filepath.Join(wm.walletsDir, name+"_privkeys.txt")
+		if err := os.WriteFile(path, []byte(sb.String()), 0644); err != nil {
+			return walletExportedMsg{path: fmt.Sprintf("error: %v", err)}
+		}
+
+		return walletExportedMsg{path: path}
+	}
+}
+
+// exportAddresses exports only addresses to a text file (one per line)
+func (wm *WalletManagerModel) exportAddresses() tea.Cmd {
+	return func() tea.Msg {
+		if len(wm.wallets) == 0 {
+			return walletExportedMsg{path: "error: no wallets — press G first"}
+		}
+
+		name := wm.nameInput
+		if name == "" {
+			name = "default"
+		}
+
+		if err := os.MkdirAll(wm.walletsDir, 0755); err != nil {
+			return walletExportedMsg{path: fmt.Sprintf("error: %v", err)}
+		}
+
+		var sb strings.Builder
+		for _, w := range wm.wallets {
+			fmt.Fprintln(&sb, w.Address)
+		}
+
+		path := filepath.Join(wm.walletsDir, name+"_addresses.txt")
+		if err := os.WriteFile(path, []byte(sb.String()), 0644); err != nil {
+			return walletExportedMsg{path: fmt.Sprintf("error: %v", err)}
+		}
+
+		return walletExportedMsg{path: path}
 	}
 }
 

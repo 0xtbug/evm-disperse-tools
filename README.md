@@ -61,7 +61,7 @@ air
 | View Reports | Browse execution history |
 | Fee Calculator | Estimate gas costs for bulk transfers |
 | Settings (`S`) | Configure keys, chains, batch size |
-| Wallet Manager (`W`) | Generate and save wallet lists |
+| Wallet Manager (`W`) | Generate wallets, save JSON, export private keys or addresses |
 
 ## Docs
 

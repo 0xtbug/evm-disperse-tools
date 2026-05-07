@@ -48,6 +48,8 @@
 | Key | Action |
 |---|---|
 | `G` | Generate wallets |
-| `S` | Save wallet list to disk |
+| `S` | Save wallet list as JSON |
+| `P` | Export private keys only (one per line) |
+| `A` | Export addresses only (one per line) |
 | `Enter` | Edit focused field |
 | `Tab` | Switch between fields |

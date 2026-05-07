@@ -1019,10 +1019,12 @@ func (am *AppModel) footerView() string {
 			StatusKeyStyle.Render("↑↓"),
 			StatusKeyStyle.Render("Ctrl+D"))
 	case pageWalletManager:
-		help = fmt.Sprintf(" %s back  %s generate  %s save",
+		help = fmt.Sprintf(" %s back  %s generate  %s save JSON  %s export privkeys  %s export addresses",
 			StatusKeyStyle.Render("Esc"),
 			StatusKeyStyle.Render("G"),
-			StatusKeyStyle.Render("S"))
+			StatusKeyStyle.Render("S"),
+			StatusKeyStyle.Render("P"),
+			StatusKeyStyle.Render("A"))
 	case pageSettings:
 		help = fmt.Sprintf(" %s navigate  %s toggle/edit  %s save  %s back",
 			StatusKeyStyle.Render("↑↓"),
