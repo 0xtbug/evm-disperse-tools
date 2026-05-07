@@ -15,7 +15,7 @@ A terminal-based (TUI) tool for bulk sending native tokens and ERC20 tokens acro
 
 ## Features
 
-- **Multi-Chain** — 4 mainnets + 4 testnets ([request a chain](https://github.com/0xtbug/evm-disperse-tools/issues/new?template=chain_request.yml))
+- **Multi-Chain** — 1 mainnet + 3 testnets ([request a chain](https://github.com/0xtbug/evm-disperse-tools/issues/new?template=chain_request.yml))
 - **Dual Mode** — Native tokens (`distributeEther`) or ERC20 tokens (`distribute`)
 - **Smart Batching** — Auto-splits large recipient lists (configurable batch size)
 - **Wallet Generator** — Bulk wallet generation from the TUI
@@ -29,12 +29,8 @@ A terminal-based (TUI) tool for bulk sending native tokens and ERC20 tokens acro
 | Network | Chain | ID | Token |
 |---|---|---|---|
 | Mainnet | Polygon | 137 | POL |
-| Mainnet | Ethereum | 1 | ETH |
-| Mainnet | BNB Chain | 56 | BNB |
-| Mainnet | Base | 8453 | ETH |
 | Testnet | Polygon Amoy | 80002 | POL |
 | Testnet | Ethereum Sepolia | 11155111 | ETH |
-| Testnet | BNB Chain Testnet | 97 | BNB |
 | Testnet | Base Sepolia | 84532 | ETH |
 
 ## Quick Start
@@ -88,7 +84,3 @@ go vet ./...                   # static analysis
 ## License
 
 MIT
-
----
-
-**Made with ❤️ by 0xtbug**
