@@ -7,6 +7,8 @@ A terminal-based (TUI) tool for bulk sending native tokens and ERC20 tokens acro
 
 <img width="2014" height="1114" alt="WindowsTerminal_B421QjfGHC" src="https://github.com/user-attachments/assets/add8fc31-2c19-425d-83db-7d889ae9601f" /><br />
 
+Example transaction:
+https://polygonscan.com/tx/0xcdfb71e4a4aff3a006d4bb41ff0f7b6c9776fcad79ee7b5216128fe465601f28
 ## Difference
 | | disperse.app / cryptosend.io | evm-disperse-tools |
 |---|---|---|
