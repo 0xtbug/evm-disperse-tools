@@ -33,8 +33,8 @@ type githubRelease struct {
 // Returns nil error with a valid Result even when no update is found.
 func Check() (*Result, error) {
 	current := version.Version
-	if current == "" || current == "dev" {
-		return &Result{CurrentVersion: "dev"}, nil
+	if current == "" {
+		current = "dev"
 	}
 
 	client := &http.Client{Timeout: httpTimeout}
