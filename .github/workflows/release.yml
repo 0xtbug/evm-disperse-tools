@@ -1,6 +1,8 @@
 name: Release
 
 on:
+  push:
+    tags: ["v*"]
   workflow_dispatch:
     inputs:
       version:
@@ -20,7 +22,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate and push tag
+      - name: Validate and push tag (workflow_dispatch only)
+        if: github.event_name == 'workflow_dispatch'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -40,12 +43,14 @@ jobs:
           go-version: "1.24"
 
       - name: Build all platforms
+        env:
+          VERSION: ${{ inputs.version || github.ref_name }}
         run: |
-          GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-linux-amd64 ./cmd/evm-disperse-tools
-          GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-linux-arm64 ./cmd/evm-disperse-tools
-          GOOS=darwin   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-darwin-amd64 ./cmd/evm-disperse-tools
-          GOOS=darwin   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-darwin-arm64 ./cmd/evm-disperse-tools
-          GOOS=windows  GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-windows-amd64.exe ./cmd/evm-disperse-tools
+          GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${VERSION}" -o dist/evm-disperse-tools-linux-amd64 ./cmd/evm-disperse-tools
+          GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${VERSION}" -o dist/evm-disperse-tools-linux-arm64 ./cmd/evm-disperse-tools
+          GOOS=darwin   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${VERSION}" -o dist/evm-disperse-tools-darwin-amd64 ./cmd/evm-disperse-tools
+          GOOS=darwin   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${VERSION}" -o dist/evm-disperse-tools-darwin-arm64 ./cmd/evm-disperse-tools
+          GOOS=windows  GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${VERSION}" -o dist/evm-disperse-tools-windows-amd64.exe ./cmd/evm-disperse-tools
 
       - name: Create checksums
         run: |
