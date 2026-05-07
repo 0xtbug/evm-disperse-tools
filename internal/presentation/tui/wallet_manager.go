@@ -36,22 +36,17 @@ type WalletManagerModel struct {
 	wallets []walletEntry
 
 	// Config
-	walletsDir        string // configs/wallets/ directory
-	maxWalletGenerate int
-	width             int
+	walletsDir string // configs/wallets/ directory
+	width      int
 }
 
 // NewWalletManagerModel creates a new wallet manager
-func NewWalletManagerModel(maxWalletGenerate int) *WalletManagerModel {
-	if maxWalletGenerate < 1 {
-		maxWalletGenerate = 1000
-	}
+func NewWalletManagerModel() *WalletManagerModel {
 	return &WalletManagerModel{
-		numInput:          "1",
-		nameInput:         "default",
-		focused:           0,
-		walletsDir:        filepath.Join("configs", "wallets"),
-		maxWalletGenerate: maxWalletGenerate,
+		numInput:   "1",
+		nameInput:  "default",
+		focused:    0,
+		walletsDir: filepath.Join("configs", "wallets"),
 	}
 }
 
@@ -102,7 +97,7 @@ func (wm *WalletManagerModel) Update(msg tea.Msg) (*WalletManagerModel, tea.Cmd)
 				return wm, nil
 			default:
 				if len(key) == 1 {
-					if wm.focused == 0 && key[0] >= '0' && key[0] <= '9' && len(wm.numInput) < 4 {
+					if wm.focused == 0 && key[0] >= '0' && key[0] <= '9' && len(wm.numInput) < 7 {
 						wm.numInput += key
 					} else if wm.focused == 1 {
 						c := key[0]
@@ -153,10 +148,6 @@ func (wm *WalletManagerModel) generateWallets() tea.Cmd {
 			if err == nil && n > 0 {
 				num = n
 			}
-		}
-
-		if num > wm.maxWalletGenerate {
-			num = wm.maxWalletGenerate
 		}
 
 		wallets := make([]walletEntry, num)
@@ -254,8 +245,6 @@ func (wm *WalletManagerModel) GetNumWallets() int {
 	if err != nil || n <= 0 {
 		return 1
 	}
-	if n > wm.maxWalletGenerate {
-		return wm.maxWalletGenerate
-	}
+
 	return n
 }

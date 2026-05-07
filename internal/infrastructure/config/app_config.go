@@ -26,7 +26,7 @@ type AppConfig struct {
 // DefaultAppConfig returns an AppConfig with sane defaults
 func DefaultAppConfig() *AppConfig {
 	cfg := &AppConfig{}
-	cfg.App.MaxWalletGenerate = 1000
+	cfg.App.MaxWalletGenerate = 0 // 0 = unlimited
 	cfg.App.MaxBatchWalletPerTx = 250
 	cfg.App.DefaultAmount = "0.01"
 	cfg.App.TokenDecimals = 18
@@ -54,9 +54,6 @@ func LoadAppConfig(path string) (*AppConfig, error) {
 	}
 
 	// Validate
-	if cfg.App.MaxWalletGenerate < 1 {
-		cfg.App.MaxWalletGenerate = 1000
-	}
 	if cfg.App.MaxBatchWalletPerTx < 1 {
 		cfg.App.MaxBatchWalletPerTx = 250
 	}

@@ -137,7 +137,7 @@ func NewAppModel(chains []*config.ChainConfig, appCfg *config.AppConfig, dispers
 		focusPane:          focusMain,
 		disperseNativeForm: NewDisperseFormScreen("Native", chainNames, walletLists, appCfg.App.DefaultAmount, defaultChainName),
 		disperseERC20Form:  NewDisperseFormScreen("ERC20", chainNames, walletLists, appCfg.App.DefaultAmount, defaultChainName),
-		walletManager:      NewWalletManagerModel(appCfg.App.MaxWalletGenerate),
+		walletManager:      NewWalletManagerModel(),
 		settingsScreen:     NewSettingsScreen(appCfg, chains),
 		reportsScreen:      NewReportsScreen(reportRepo),
 		feeCalculator:      NewFeeCalculatorScreen(chains, appCfg, defaultChainName),
