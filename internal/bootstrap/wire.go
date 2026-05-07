@@ -4,13 +4,16 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"fmt"
+	"io/fs"
 	"math/big"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/crypto"
 
+	evmdisperse "github.com/0xtbug/evm-disperse-tools"
 	"github.com/0xtbug/evm-disperse-tools/internal/application/usecase"
 	"github.com/0xtbug/evm-disperse-tools/internal/domain/entity"
 	"github.com/0xtbug/evm-disperse-tools/internal/infrastructure/config"
@@ -38,12 +41,8 @@ func BuildApp() (*tui.AppModel, error) {
 		return nil, fmt.Errorf("no chains configured")
 	}
 
-	// Load disperse contract ABI (shared across all chains)
-	abiBytes, err := os.ReadFile("internal/infrastructure/evm/abi/disperse.json")
-	if err != nil {
-		return nil, fmt.Errorf("failed to load disperse ABI: %w", err)
-	}
-	abiJSON := string(abiBytes)
+	// Load disperse contract ABI (embedded in binary)
+	abiJSON := string(evmdisperse.DisperseABI)
 
 	// Create shared repositories
 	reportRepo := storage.NewReportsFileRepo("data/reports")
@@ -114,18 +113,13 @@ func BuildApp() (*tui.AppModel, error) {
 	return app, nil
 }
 
-// loadChainConfigs loads all chain configurations from the configs/chains directory
+// loadChainConfigs loads all chain configurations from the embedded configs/chains directory
 func loadChainConfigs() ([]*config.ChainConfig, error) {
 	chainsDir := "configs/chains"
 
-	// Ensure directory exists
-	if _, err := os.Stat(chainsDir); os.IsNotExist(err) {
-		return nil, fmt.Errorf("chains configuration directory not found: %s", chainsDir)
-	}
-
-	entries, err := os.ReadDir(chainsDir)
+	entries, err := fs.ReadDir(evmdisperse.ChainFS, chainsDir)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read chains directory: %w", err)
+		return nil, fmt.Errorf("failed to read embedded chains directory: %w", err)
 	}
 
 	var chains []*config.ChainConfig
@@ -135,20 +129,26 @@ func loadChainConfigs() ([]*config.ChainConfig, error) {
 			continue
 		}
 
-		if filepath.Ext(entry.Name()) != ".yaml" && filepath.Ext(entry.Name()) != ".yml" {
+		ext := filepath.Ext(entry.Name())
+		if ext != ".yaml" && ext != ".yml" {
 			continue
 		}
 
-		path := filepath.Join(chainsDir, entry.Name())
-		chainConfig, err := config.LoadChainConfig(path)
+		filePath := path.Join(chainsDir, entry.Name())
+		data, err := fs.ReadFile(evmdisperse.ChainFS, filePath)
 		if err != nil {
-			return nil, fmt.Errorf("failed to load chain config %s: %w", path, err)
+			return nil, fmt.Errorf("failed to read embedded chain config %s: %w", filePath, err)
+		}
+
+		chainConfig, err := config.ParseChainConfig(data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse chain config %s: %w", filePath, err)
 		}
 		chains = append(chains, chainConfig)
 	}
 
 	if len(chains) == 0 {
-		return nil, fmt.Errorf("no valid chain configurations found in %s", chainsDir)
+		return nil, fmt.Errorf("no valid chain configurations found")
 	}
 
 	return chains, nil

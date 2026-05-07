@@ -51,6 +51,11 @@ func LoadChainConfig(path string) (*ChainConfig, error) {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
+	return ParseChainConfig(data)
+}
+
+// ParseChainConfig parses a chain configuration from YAML bytes
+func ParseChainConfig(data []byte) (*ChainConfig, error) {
 	var cfg ChainConfig
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, fmt.Errorf("failed to parse YAML: %w", err)
