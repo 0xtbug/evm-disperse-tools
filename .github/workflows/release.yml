@@ -1,8 +1,12 @@
 name: Release
 
 on:
-  push:
-    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. v1.0.0)"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -13,6 +17,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate and push tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          VERSION="${{ inputs.version }}"
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Version must match format vX.Y.Z (e.g. v1.0.0)"
+            exit 1
+          fi
+          git tag "$VERSION"
+          git push origin "$VERSION"
 
       - uses: actions/setup-go@v5
         with:
@@ -20,11 +41,11 @@ jobs:
 
       - name: Build all platforms
         run: |
-          GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-linux-amd64 ./cmd/evm-disperse-tools
-          GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-linux-arm64 ./cmd/evm-disperse-tools
-          GOOS=darwin   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-darwin-amd64 ./cmd/evm-disperse-tools
-          GOOS=darwin   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-darwin-arm64 ./cmd/evm-disperse-tools
-          GOOS=windows  GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-windows-amd64.exe ./cmd/evm-disperse-tools
+          GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-linux-amd64 ./cmd/evm-disperse-tools
+          GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-linux-arm64 ./cmd/evm-disperse-tools
+          GOOS=darwin   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-darwin-amd64 ./cmd/evm-disperse-tools
+          GOOS=darwin   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-darwin-arm64 ./cmd/evm-disperse-tools
+          GOOS=windows  GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ inputs.version }}" -o dist/evm-disperse-tools-windows-amd64.exe ./cmd/evm-disperse-tools
 
       - name: Create checksums
         run: |
