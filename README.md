@@ -82,10 +82,17 @@ air
 
 ```bash
 go test ./...                  # all tests
-go test ./tests/smoke -v       # chain config validation
-go test ./tests/security -v    # hardcoded key scanner
 go vet ./...                   # static analysis
 ```
+
+## Release
+
+Releases are triggered manually via GitHub Actions:
+
+1. Go to **Actions → Release** workflow
+2. Click **Run workflow**
+3. Enter the version (e.g. `v1.0.0`)
+4. The workflow will build binaries for all platforms and create a GitHub Release
 
 ## License
 
