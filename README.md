@@ -35,6 +35,22 @@ A terminal-based (TUI) tool for bulk sending native tokens and ERC20 tokens acro
 
 ## Quick Start
 
+### Download (Recommended)
+
+Download the latest pre-built binary from [GitHub Releases](https://github.com/0xtbug/evm-disperse-tools/releases/latest):
+
+| Platform | File |
+|---|---|
+| Linux (x64) | `evm-disperse-tools-linux-amd64` |
+| Linux (ARM) | `evm-disperse-tools-linux-arm64` |
+| macOS (Intel) | `evm-disperse-tools-darwin-amd64` |
+| macOS (Apple Silicon) | `evm-disperse-tools-darwin-arm64` |
+| Windows | `evm-disperse-tools-windows-amd64.exe` |
+
+Verify checksum: `sha256sum -c checksums.txt`
+
+### Build from Source
+
 ```bash
 git clone https://github.com/0xtbug/evm-disperse-tools.git
 cd evm-disperse-tools
@@ -44,6 +60,11 @@ go build -o evm-disperse-tools ./cmd/evm-disperse-tools
 ```
 
 Requires Go 1.24.0+.
+
+> **Note:** Building from source will show version as `dev`. To set a specific version, use:
+> ```bash
+> go build -ldflags="-X github.com/0xtbug/evm-disperse-tools/internal/version.Version=$(git describe --tags)" -o evm-disperse-tools ./cmd/evm-disperse-tools
+> ```
 
 ### Development
 
