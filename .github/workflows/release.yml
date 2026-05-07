@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Build all platforms
+        run: |
+          GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-linux-amd64 ./cmd/evm-disperse-tools
+          GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-linux-arm64 ./cmd/evm-disperse-tools
+          GOOS=darwin   GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-darwin-amd64 ./cmd/evm-disperse-tools
+          GOOS=darwin   GOARCH=arm64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-darwin-arm64 ./cmd/evm-disperse-tools
+          GOOS=windows  GOARCH=amd64 go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=${{ github.ref_name }}" -o dist/evm-disperse-tools-windows-amd64.exe ./cmd/evm-disperse-tools
+
+      - name: Create checksums
+        run: |
+          cd dist
+          sha256sum * > checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/evm-disperse-tools-linux-amd64
+            dist/evm-disperse-tools-linux-arm64
+            dist/evm-disperse-tools-darwin-amd64
+            dist/evm-disperse-tools-darwin-arm64
+            dist/evm-disperse-tools-windows-amd64.exe
+            dist/checksums.txt

@@ -1,0 +1,7 @@
+key: polygon
+name: Polygon
+chain_id: 137
+rpc_url: https://polygon.publicnode.com
+disperse_contract: "0x9770ad8c2f2548974BEd142A0c374B3eBb2D844B"
+native_token: POL
+network: mainnet

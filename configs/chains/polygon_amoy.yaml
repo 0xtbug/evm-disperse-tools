@@ -1,0 +1,7 @@
+key: polygon_amoy
+name: Polygon Amoy
+chain_id: 80002
+rpc_url: https://rpc-amoy.polygon.technology
+disperse_contract: "0x9770ad8c2f2548974BEd142A0c374B3eBb2D844B"
+native_token: POL
+network: testnet

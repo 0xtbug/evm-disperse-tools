@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./... -v -count=1
+
+  build:
+    name: Build (${{ matrix.os }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Build
+        run: go build -ldflags="-s -w -X github.com/0xtbug/evm-disperse-tools/internal/version.Version=ci-${{ github.sha }}" -o evm-disperse-tools${{ matrix.os == 'windows-latest' && '.exe' || '' }} ./cmd/evm-disperse-tools
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: evm-disperse-tools-${{ matrix.os }}
+          path: evm-disperse-tools${{ matrix.os == 'windows-latest' && '.exe' || '' }}

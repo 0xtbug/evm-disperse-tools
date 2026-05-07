@@ -1,0 +1,7 @@
+key: ethereum_sepolia
+name: Ethereum Sepolia
+chain_id: 11155111
+rpc_url: https://ethereum-sepolia-rpc.publicnode.com
+disperse_contract: "0x49190D9Fb2A24260023899c5B3bdA1FEb2BF9239"
+native_token: ETH
+network: testnet

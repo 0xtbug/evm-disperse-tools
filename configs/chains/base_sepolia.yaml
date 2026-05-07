@@ -1,0 +1,7 @@
+key: base_sepolia
+name: Base Sepolia
+chain_id: 84532
+rpc_url: https://sepolia.base.org
+disperse_contract: "0x726e62c9C3759D059FF98fC33Cc7690B6d2F2693"
+native_token: ETH
+network: testnet

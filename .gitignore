@@ -1,0 +1,29 @@
+# Build artifacts
+bin/
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+*.test
+*.out
+
+
+# Local environment files
+.env
+.env.local
+*.key
+*.pem
+reports/
+tmp/
+dist/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+wallets/
+configs/app.yaml
