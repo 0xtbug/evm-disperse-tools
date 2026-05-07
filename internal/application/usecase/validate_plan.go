@@ -94,7 +94,11 @@ func (vp *ValidatePlan) ExecuteValidate(ctx context.Context, req *entity.Dispers
 
 	// For native disperse, ensure we have enough for the disperse amount + gas
 	if req.Mode == entity.TokenModeNative {
-		gasEstimate := big.NewInt(200000) // Rough estimate
+		// Base gas + per-recipient gas estimate (each transfer ~21k-30k gas for storage writes)
+		const baseGas int64 = 50000
+		const gasPerRecipient int64 = 25000
+		gasUnits := baseGas + gasPerRecipient*int64(len(req.Recipients))
+		gasEstimate := big.NewInt(gasUnits)
 		fees, err := vp.chainGateway.SuggestFees(ctx)
 		if err == nil {
 			if gasPriceStr, ok := fees["gasPrice"]; ok {

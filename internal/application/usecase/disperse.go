@@ -52,14 +52,14 @@ func (d *Disperse) Execute(ctx context.Context, req *entity.DisperseRequest, cha
 
 	txHash, err := d.disperseGateway.SendTx(ctx, fromAddress, privKey, callData, value)
 	if err != nil {
-		return nil, fmt.Errorf("failed to send transaction: %w", err)
+		return nil, err
 	}
 
 	blockNumber, gasUsed, err := d.disperseGateway.ConfirmTx(ctx, txHash)
 	if err != nil {
 		report := d.newReport(txHash, "reverted", blockNumber, gasUsed, req, chain)
 		_ = d.reportRepository.Save(report)
-		return report, fmt.Errorf("transaction reverted on-chain: %w", err)
+		return report, err
 	}
 
 	report := d.newReport(txHash, "confirmed", blockNumber, gasUsed, req, chain)

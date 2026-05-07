@@ -259,7 +259,6 @@ func createDisperseFunc(
 
 		// Multi-batch — use BatchDisperse
 		batchCount := (totalRecipients + maxBatch - 1) / maxBatch
-		fmt.Fprintf(os.Stderr, "[disperse] splitting %d recipients into %d batches (max %d per tx)\n", totalRecipients, batchCount, maxBatch)
 
 		var reports []*entity.ExecutionReport
 		reports, err = infra.disperse.BatchExecute(ctx, req, chain, fromAddress, privKey, maxBatch)

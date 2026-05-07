@@ -329,7 +329,9 @@ func (dfs *DisperseFormScreen) UpdateDefaultAmount(amount string) {
 	}
 }
 
-// UpdateWalletLists refreshes the wallet list selection
+// UpdateWalletLists refreshes the wallet list selection and reloads addresses.
+// Always reloads addresses to ensure the form has the latest data (e.g. after
+// the user generates and saves new wallets to an existing list name).
 func (dfs *DisperseFormScreen) UpdateWalletLists(lists []storage.WalletListInfo) {
 	dfs.walletLists = lists
 	found := false
@@ -343,7 +345,10 @@ func (dfs *DisperseFormScreen) UpdateWalletLists(lists []storage.WalletListInfo)
 	if !found && len(lists) > 0 {
 		dfs.selectedListIdx = 0
 		dfs.selectedListName = lists[0].Name
-		addrs, _ := storage.LoadAddressesFromWalletManager(lists[0].Path)
+	}
+	// Always reload addresses from the selected list to pick up any changes
+	if len(dfs.walletLists) > 0 && dfs.selectedListIdx < len(dfs.walletLists) {
+		addrs, _ := storage.LoadAddressesFromWalletManager(dfs.walletLists[dfs.selectedListIdx].Path)
 		dfs.selectedAddrs = addrs
 	}
 }

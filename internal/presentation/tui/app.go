@@ -1145,7 +1145,7 @@ func truncateString(s string, maxLen int) string {
 	if maxLen <= 3 {
 		return s[:maxLen]
 	}
-	return s[:maxLen-3] + "..."
+	return "..." + s[len(s)-(maxLen-3):]
 }
 
 // copyFeedbackMsg is used to clear copy feedback after timeout

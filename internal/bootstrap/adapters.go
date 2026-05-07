@@ -133,7 +133,7 @@ func (dga *DisperseGatewayAdapter) SendTx(ctx context.Context, from string, priv
 	// Delegate to the real contract gateway which handles signing and sending
 	txHash, err := dga.gateway.SendTransaction(ctx, from, privKey, callDataBytes, value)
 	if err != nil {
-		return "", fmt.Errorf("failed to send transaction: %w", err)
+		return "", err
 	}
 
 	return txHash, nil
