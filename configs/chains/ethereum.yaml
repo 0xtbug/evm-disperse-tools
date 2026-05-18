@@ -1,0 +1,7 @@
+key: ethereum
+name: Ethereum
+chain_id: 1
+rpc_url: https://eth.publicnode.com
+disperse_contract: "0xc96fBdCD64FCaC81c20f11e114d33F420Ebc67C6"
+native_token: ETH
+network: mainnet

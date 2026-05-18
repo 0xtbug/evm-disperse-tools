@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.4
+
+### New Chains
+
+- **Ethereum** (mainnet, chain ID 1) — contract `0xc96fBdCD64FCaC81c20f11e114d33F420Ebc67C6`
+- **BNB Chain** (mainnet, chain ID 56) — contract `0x5236AB3B8789447ED1eD02da071AAc6eD48C54E5`
+- **Base** (mainnet, chain ID 8453) — contract `0x5236AB3B8789447ED1eD02da071AAc6eD48C54E5`
+- **Arbitrum** (mainnet, chain ID 42161) — contract `0x5236AB3B8789447ED1eD02da071AAc6eD48C54E5`
+
 ## v1.0.3
 
 ### Fixes

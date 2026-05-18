@@ -1,0 +1,7 @@
+key: bnb
+name: BNB Chain
+chain_id: 56
+rpc_url: https://bsc.publicnode.com
+disperse_contract: "0x5236AB3B8789447ED1eD02da071AAc6eD48C54E5"
+native_token: BNB
+network: mainnet

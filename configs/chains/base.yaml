@@ -1,0 +1,7 @@
+key: base
+name: Base
+chain_id: 8453
+rpc_url: https://base.publicnode.com
+disperse_contract: "0x5236AB3B8789447ED1eD02da071AAc6eD48C54E5"
+native_token: ETH
+network: mainnet
